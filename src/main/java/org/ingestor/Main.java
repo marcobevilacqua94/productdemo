@@ -170,7 +170,7 @@ public class Main {
                                         .flatMap(count ->
                                                 collection.upsert(
                                                         finalPrefix + count,
-                                                        docGenerator.generateDoc(finalPrefix, finalStart_seq + (long) count))
+                                                        docGenerator.generateDoc(finalPrefix, finalStart_seq + (long) count)).doOnError(e -> {System.out.println(e.getMessage());})
                                         )
                                         .sequential()
                                         .collectList()
