@@ -172,13 +172,13 @@ public class Main {
                                                         finalPrefix + count,
                                                         docGenerator.generateDoc(finalPrefix, finalStart_seq + (long) count))
                                         )
-                                        .doOnError(System.out::println)
                                         .sequential()
+                                        .retry()
                                         .collectList()
                                         .block();
                             }
                     )
-                    .doOnError(System.out::println)
+                    .retry()
                     .collectList()
                     .block();
         }
