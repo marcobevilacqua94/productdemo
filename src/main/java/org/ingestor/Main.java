@@ -1,21 +1,45 @@
 package org.ingestor;
 
+import com.couchbase.client.core.env.SecurityConfig;
+import com.couchbase.client.core.env.SeedNode;
+import com.couchbase.client.core.env.TimeoutConfig;
+import com.couchbase.client.core.error.*;
+import com.couchbase.client.core.msg.kv.DurabilityLevel;
 import com.couchbase.client.java.*;
+import com.couchbase.client.java.Collection;
+import com.couchbase.client.java.env.ClusterEnvironment;
+import com.couchbase.client.java.json.JsonArray;
+import com.couchbase.client.java.json.JsonObject;
+import com.couchbase.client.java.kv.*;
+import com.couchbase.client.java.query.QueryOptions;
 import com.couchbase.client.java.query.QueryResult;
+import com.couchbase.client.java.transactions.TransactionGetResult;
+import com.couchbase.client.java.transactions.TransactionQueryOptions;
+import com.couchbase.client.java.transactions.TransactionQueryResult;
+import com.couchbase.client.java.transactions.TransactionResult;
+import com.couchbase.client.java.transactions.error.TransactionCommitAmbiguousException;
+import com.couchbase.client.java.transactions.error.TransactionFailedException;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+import java.beans.Statement;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        DocGenerator docGenerator = new DLDocGenerator();
+        DocGenerator docGenerator = new DLDocGenerator2();
 
         /* parameters to use if no command line is found */
         String username = "Administrator";
         String password = "password";
-        String ip = "127.0.0.1";
+        String ip = "localhost";
         String bucketName = "sample";
         String scopeName = "_default";
         String collectionName = "_default";
@@ -133,16 +157,20 @@ public class Main {
             prefix = RandomStringUtils.randomAlphabetic(shuffleLen).toUpperCase();
         }
 
-        try (
+
+        try(
                 Cluster cluster = Cluster.connect(
                         ip,
-                        ClusterOptions.clusterOptions(username, password)
-                )
+                        ClusterOptions.clusterOptions(username, password));
         ) {
 
-            ReactiveBucket bucket = cluster.bucket(bucketName).reactive();
-            ReactiveScope scope = bucket.scope(scopeName);
-            ReactiveCollection collection = scope.collection(collectionName);
+            ReactiveBucket buck = cluster.bucket(bucketName).reactive();
+            ReactiveScope scop = buck.scope(scopeName);
+
+
+            ReactiveCollection collection = scop.collection(collectionName);
+
+
             long finalContentLimit = contentLimit;
             long finalDocs = docs;
             String query = "select COUNT(*) as count from `" + bucketName + "`.`" + scopeName + "`.`" + collectionName + "`";
@@ -159,18 +187,17 @@ public class Main {
                     })
                     .buffer(buffer)
                     .map(countList -> {
-                                if (finalContentLimit > 0) {
-                                    QueryResult result = cluster.query(query);
-                                    if (Long.parseLong(result.rowsAsObject().get(0).get("count").toString()) >= finalContentLimit) {
-                                        System.exit(0);
-                                    }
-                                }
+//                                if (finalContentLimit > 0) {
+//                                    QueryResult result = cluster.query(query);
+//                                    if (Long.parseLong(result.rowsAsObject().get(0).get("count").toString()) >= finalContentLimit) {
+//                                        System.exit(0);
+//                                    }
+//                                }
                                 return Flux.fromIterable(countList)
                                         .parallel()
-                                        .flatMap(count ->
-                                                collection.upsert(
-                                                        finalPrefix + count,
-                                                        docGenerator.generateDoc(finalPrefix, finalStart_seq + (long) count))
+                                        .flatMap(count -> collection.upsert(
+                                                count.toString(),
+                                                docGenerator.generateDoc())
                                         )
                                         .sequential()
                                         .retry()
@@ -182,6 +209,7 @@ public class Main {
                     .collectList()
                     .block();
         }
+        }
     }
 
-}
+
