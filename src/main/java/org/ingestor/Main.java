@@ -196,7 +196,7 @@ public class Main {
                                 return Flux.fromIterable(countList)
                                         .parallel()
                                         .flatMap(count -> collection.upsert(
-                                                count.toString(),
+                                                finalPrefix + "-" + count.toString(),
                                                 docGenerator.generateDoc())
                                         )
                                         .sequential()
