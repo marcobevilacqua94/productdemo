@@ -37,9 +37,9 @@ public class Main {
         DocGenerator docGenerator = new DLDocGenerator2();
 
         /* parameters to use if no command line is found */
-        String username = "Administrator";
-        String password = "password";
-        String ip = "localhost";
+        String username = "app";
+        String password = "Pwd12345!";
+        String ip = "couchbases://cb.kwls066ebimhmue.cloud.couchbase.com";
         String bucketName = "sample";
         String scopeName = "_default";
         String collectionName = "_default";
