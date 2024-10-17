@@ -36,31 +36,31 @@ public class Main {
 
             Faker faker = new Faker();
 
-//            //products
-//            ReactiveCollection productsCollection = scope.collection("products");
-//            Flux.generate(() -> 0L, (i, sink) ->
-//                    {
-//                        sink.next(i);
-//                        if (i > numProducts) {
-//                            sink.complete();
-//                        }
-//                        return i + 1;
-//                    })
-//                    .buffer(buffer)
-//                    .map(countList -> Flux.fromIterable(countList)
-//                            .parallel()
-//                            .flatMap(count -> productsCollection.upsert(
-//                                    count.toString(),
-//                                    ProductsGenerator.generateProduct(faker))
-//                            )
-//                            .sequential()
-//                            .retry()
-//                            .collectList()
-//                            .block()
-//                    )
-//                    .retry()
-//                    .collectList()
-//                    .block();
+            //products
+            ReactiveCollection productsCollection = scope.collection("products");
+            Flux.generate(() -> 0L, (i, sink) ->
+                    {
+                        sink.next(i);
+                        if (i > numProducts) {
+                            sink.complete();
+                        }
+                        return i + 1;
+                    })
+                    .buffer(buffer)
+                    .map(countList -> Flux.fromIterable(countList)
+                            .parallel()
+                            .flatMap(count -> productsCollection.upsert(
+                                    count.toString(),
+                                    ProductsGenerator.generateProduct(faker))
+                            )
+                            .sequential()
+                            .retry()
+                            .collectList()
+                            .block()
+                    )
+                    .retry()
+                    .collectList()
+                    .block();
 
 
 //            //ratings
@@ -142,31 +142,31 @@ public class Main {
 //                    .collectList()
 //                    .block();
 //
-            //warehouses
-            ReactiveCollection warehousesCollection = scope.collection("warehouses");
-            Flux.generate(() -> 0L, (i, sink) ->
-                    {
-                        sink.next(i);
-                        if (i > numWarehouses) {
-                            sink.complete();
-                        }
-                        return i + 1;
-                    })
-                    .buffer(buffer)
-                    .map(countList -> Flux.fromIterable(countList)
-                            .parallel()
-                            .flatMap(count -> warehousesCollection.upsert(
-                                    count.toString(),
-                                    WarehousesGenerator.generateWarehouse(faker))
-                            )
-                            .sequential()
-                            .retry()
-                            .collectList()
-                            .block()
-                    )
-                    .retry()
-                    .collectList()
-                    .block();
+//            //warehouses
+//            ReactiveCollection warehousesCollection = scope.collection("warehouses");
+//            Flux.generate(() -> 0L, (i, sink) ->
+//                    {
+//                        sink.next(i);
+//                        if (i > numWarehouses) {
+//                            sink.complete();
+//                        }
+//                        return i + 1;
+//                    })
+//                    .buffer(buffer)
+//                    .map(countList -> Flux.fromIterable(countList)
+//                            .parallel()
+//                            .flatMap(count -> warehousesCollection.upsert(
+//                                    count.toString(),
+//                                    WarehousesGenerator.generateWarehouse(faker))
+//                            )
+//                            .sequential()
+//                            .retry()
+//                            .collectList()
+//                            .block()
+//                    )
+//                    .retry()
+//                    .collectList()
+//                    .block();
 
         }
 
