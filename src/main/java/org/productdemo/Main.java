@@ -36,40 +36,12 @@ public class Main {
 
             Faker faker = new Faker();
 
-            //products
-            ReactiveCollection productsCollection = scope.collection("products");
-            Flux.generate(() -> 0L, (i, sink) ->
-                    {
-                        sink.next(i);
-                        if (i > numProducts) {
-                            sink.complete();
-                        }
-                        return i + 1;
-                    })
-                    .buffer(buffer)
-                    .map(countList -> Flux.fromIterable(countList)
-                            .parallel()
-                            .flatMap(count -> productsCollection.upsert(
-                                    count.toString(),
-                                    ProductsGenerator.generateProduct(faker))
-                            )
-                            .sequential()
-                            .retry()
-                            .collectList()
-                            .block()
-                    )
-                    .retry()
-                    .collectList()
-                    .block();
-
-
-//            //ratings
-//            long startFrom = 80604625L;
-//            ReactiveCollection ratingsCollection = scope.collection("ratings");
+//            //products
+//            ReactiveCollection productsCollection = scope.collection("products");
 //            Flux.generate(() -> 0L, (i, sink) ->
 //                    {
 //                        sink.next(i);
-//                        if (i > numRatings - startFrom) {
+//                        if (i > numProducts) {
 //                            sink.complete();
 //                        }
 //                        return i + 1;
@@ -77,9 +49,9 @@ public class Main {
 //                    .buffer(buffer)
 //                    .map(countList -> Flux.fromIterable(countList)
 //                            .parallel()
-//                            .flatMap(count -> ratingsCollection.upsert(
-//                                    String.valueOf(((long)count + startFrom)),
-//                                    RatingsGenerator.generateRating(faker))
+//                            .flatMap(count -> productsCollection.upsert(
+//                                    count.toString(),
+//                                    ProductsGenerator.generateProduct(faker))
 //                            )
 //                            .sequential()
 //                            .retry()
@@ -89,6 +61,34 @@ public class Main {
 //                    .retry()
 //                    .collectList()
 //                    .block();
+
+
+            //ratings
+            long startFrom = 82950302L;
+            ReactiveCollection ratingsCollection = scope.collection("ratings");
+            Flux.generate(() -> 0L, (i, sink) ->
+                    {
+                        sink.next(i);
+                        if (i > numRatings - startFrom) {
+                            sink.complete();
+                        }
+                        return i + 1;
+                    })
+                    .buffer(buffer)
+                    .map(countList -> Flux.fromIterable(countList)
+                            .parallel()
+                            .flatMap(count -> ratingsCollection.upsert(
+                                    String.valueOf(((long)count + startFrom)),
+                                    RatingsGenerator.generateRating(faker))
+                            )
+                            .sequential()
+                            .retry()
+                            .collectList()
+                            .block()
+                    )
+                    .retry()
+                    .collectList()
+                    .block();
 
 //            //transactions
 //            ReactiveCollection transactionsCollection = scope.collection("transactions");
