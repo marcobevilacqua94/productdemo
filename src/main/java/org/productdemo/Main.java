@@ -7,8 +7,8 @@ import reactor.core.publisher.Flux;
 public class Main {
 
     static public long numProducts = 5000000L;
-    static public long numRatings = 200000000L;
-    static public long numTransactions = 200000000L;
+    static public long numRatings = 100000000L;
+    static public long numTransactions = 100000000L;
     static public long numUsers = 2000000L;
     static public long numWarehouses = 10000L;
 
@@ -63,32 +63,32 @@ public class Main {
 //                    .block();
 
 
-            //ratings
-            long startFrom = 80604625L;
-            ReactiveCollection ratingsCollection = scope.collection("ratings");
-            Flux.generate(() -> 0L, (i, sink) ->
-                    {
-                        sink.next(i);
-                        if (i > numRatings - startFrom) {
-                            sink.complete();
-                        }
-                        return i + 1;
-                    })
-                    .buffer(buffer)
-                    .map(countList -> Flux.fromIterable(countList)
-                            .parallel()
-                            .flatMap(count -> ratingsCollection.upsert(
-                                    String.valueOf(((long)count + startFrom)),
-                                    RatingsGenerator.generateRating(faker))
-                            )
-                            .sequential()
-                            .retry()
-                            .collectList()
-                            .block()
-                    )
-                    .retry()
-                    .collectList()
-                    .block();
+//            //ratings
+//            long startFrom = 80604625L;
+//            ReactiveCollection ratingsCollection = scope.collection("ratings");
+//            Flux.generate(() -> 0L, (i, sink) ->
+//                    {
+//                        sink.next(i);
+//                        if (i > numRatings - startFrom) {
+//                            sink.complete();
+//                        }
+//                        return i + 1;
+//                    })
+//                    .buffer(buffer)
+//                    .map(countList -> Flux.fromIterable(countList)
+//                            .parallel()
+//                            .flatMap(count -> ratingsCollection.upsert(
+//                                    String.valueOf(((long)count + startFrom)),
+//                                    RatingsGenerator.generateRating(faker))
+//                            )
+//                            .sequential()
+//                            .retry()
+//                            .collectList()
+//                            .block()
+//                    )
+//                    .retry()
+//                    .collectList()
+//                    .block();
 
 //            //transactions
 //            ReactiveCollection transactionsCollection = scope.collection("transactions");
@@ -142,31 +142,31 @@ public class Main {
 //                    .collectList()
 //                    .block();
 //
-//            //warehouses
-//            ReactiveCollection warehousesCollection = scope.collection("warehouses");
-//            Flux.generate(() -> 0L, (i, sink) ->
-//                    {
-//                        sink.next(i);
-//                        if (i > numWarehouses) {
-//                            sink.complete();
-//                        }
-//                        return i + 1;
-//                    })
-//                    .buffer(buffer)
-//                    .map(countList -> Flux.fromIterable(countList)
-//                            .parallel()
-//                            .flatMap(count -> warehousesCollection.upsert(
-//                                    count.toString(),
-//                                    WarehousesGenerator.generateWarehouse(faker))
-//                            )
-//                            .sequential()
-//                            .retry()
-//                            .collectList()
-//                            .block()
-//                    )
-//                    .retry()
-//                    .collectList()
-//                    .block();
+            //warehouses
+            ReactiveCollection warehousesCollection = scope.collection("warehouses");
+            Flux.generate(() -> 0L, (i, sink) ->
+                    {
+                        sink.next(i);
+                        if (i > numWarehouses) {
+                            sink.complete();
+                        }
+                        return i + 1;
+                    })
+                    .buffer(buffer)
+                    .map(countList -> Flux.fromIterable(countList)
+                            .parallel()
+                            .flatMap(count -> warehousesCollection.upsert(
+                                    count.toString(),
+                                    WarehousesGenerator.generateWarehouse(faker))
+                            )
+                            .sequential()
+                            .retry()
+                            .collectList()
+                            .block()
+                    )
+                    .retry()
+                    .collectList()
+                    .block();
 
         }
 

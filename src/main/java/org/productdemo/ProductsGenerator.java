@@ -14,22 +14,22 @@ public class ProductsGenerator {
         String productName = faker.commerce().productName();
         double price = Double.parseDouble(faker.commerce().price());
         String supplier = faker.company().name();
-        List<JsonObject> warehouses = generateWarehouses(faker);
+        List<JsonObject> stocks = generateStocks(faker);
         return JsonObject.create()
                 .put("productName", productName)
                 .put("price", price)
                 .put("supplier", supplier)
-                .put("warehouses", warehouses);
+                .put("stocks", stocks);
     }
 
-    public static List<JsonObject> generateWarehouses(Faker faker){
-        List<JsonObject> warehouses = new ArrayList<>();
+    public static List<JsonObject> generateStocks(Faker faker){
+        List<JsonObject> stocks = new ArrayList<>();
         for(int i = 0; i < faker.random().nextInt(8) + 1; i++){
-            warehouses.add(JsonObject.create()
+            stocks.add(JsonObject.create()
                     .put("warehouseId", faker.random().nextLong(numWarehouses))
                     .put("stockQuantity", faker.number().numberBetween(0, 1000)));
         }
-        return warehouses;
+        return stocks;
     }
 
 }
