@@ -64,7 +64,7 @@ public class Main {
 
 
             //ratings
-            long startFrom = 31730626L;
+            long startFrom = 80604625L;
             ReactiveCollection ratingsCollection = scope.collection("ratings");
             Flux.generate(() -> 0L, (i, sink) ->
                     {
