@@ -6,10 +6,10 @@ import reactor.core.publisher.Flux;
 
 public class Main {
 
-    static public long numProducts = 100000L;
-    static public long numRatings = 5000000L;
-    static public long numTransactions = 5000000L;
-    static public long numUsers = 200000L;
+    static public long numProducts = 1000000L;
+    static public long numRatings = 20000000L;
+    static public long numTransactions = 25000000L;
+    static public long numUsers = 3000000L;
     static public long numWarehouses = 10000L;
 
     public static void main(String[] args) {
@@ -18,7 +18,7 @@ public class Main {
         /* parameters to use if no command line is found */
         String username = "app";
         String password = "Couchbase123!";
-        String ip = "couchbases://cb.nolkgvtiftjhnrkk.cloud.couchbase.com";
+        String ip = "couchbases://cb.kwh9supmzlotmb.cloud.couchbase.com";
         String bucketName = "productDemo";
         String scopeName = "productDemo";
         int buffer = 1000;
