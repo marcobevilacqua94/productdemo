@@ -64,12 +64,11 @@ public class Main {
 
 
             //ratings
-            long startFrom = 82950302L;
             ReactiveCollection ratingsCollection = scope.collection("ratings");
             Flux.generate(() -> 0L, (i, sink) ->
                     {
                         sink.next(i);
-                        if (i > numRatings - startFrom) {
+                        if (i > numRatings) {
                             sink.complete();
                         }
                         return i + 1;
@@ -78,7 +77,7 @@ public class Main {
                     .map(countList -> Flux.fromIterable(countList)
                             .parallel()
                             .flatMap(count -> ratingsCollection.upsert(
-                                    String.valueOf(((long)count + startFrom)),
+                                    String.valueOf(((long)count)),
                                     RatingsGenerator.generateRating(faker))
                             )
                             .sequential()
