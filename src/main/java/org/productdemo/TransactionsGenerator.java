@@ -13,7 +13,7 @@ public class TransactionsGenerator {
 
     public static JsonObject generateTransaction(Faker faker) {
         long userId = faker.random().nextLong(numUsers);
-        String transactionDate = faker.date().past(365, java.util.concurrent.TimeUnit.DAYS).toString();
+        String transactionDate = faker.date().past(995, 730,java.util.concurrent.TimeUnit.DAYS).toString();
         String paymentMethod = faker.random().nextBoolean() ? "Credit Card" : "PayPal";
         String shippingMethod = faker.random().nextBoolean() ? "Standard" : "Express";
         String[] devices = {"Desktop", "Mobile", "Tablet"};
