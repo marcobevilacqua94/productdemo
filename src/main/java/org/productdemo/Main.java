@@ -16,9 +16,9 @@ public class Main {
 
 
         /* parameters to use if no command line is found */
-        String username = "Administrator";
-        String password = "password";
-        String ip = "localhost";
+        String username = "app";
+        String password = "Couchbase123!";
+        String ip = "couchbases://cb.uygw28qbsex-foiw.cloud.couchbase.com";
         String bucketName = "productDemo";
         String scopeName = "productDemo";
         int buffer = 1000;
